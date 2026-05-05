@@ -122,4 +122,3 @@ describe('App', () => {
     expect(() => app.ngOnDestroy()).not.toThrow();
   });
 });
-
