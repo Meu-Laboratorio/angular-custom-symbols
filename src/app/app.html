@@ -1,0 +1,256 @@
+<div class="page-wrapper">
+  <header class="page-header">
+    <h1>🌊 Reservatórios de Água</h1>
+    <p>Sistema interligado de três reservatórios com canos de transbordamento</p>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════
+       SVG DIAGRAM
+  ══════════════════════════════════════════════════ -->
+  <div class="svg-card">
+    <svg viewBox="0 0 820 530" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama dos reservatórios">
+      <defs>
+        <!-- Water gradient (top-to-bottom) -->
+        <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#64b5f6" stop-opacity="0.92"/>
+          <stop offset="100%" stop-color="#1565c0" stop-opacity="1"/>
+        </linearGradient>
+        <!-- Overflow/flow water gradient (left-to-right) -->
+        <linearGradient id="fg" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#42a5f5"/>
+          <stop offset="100%" stop-color="#1976d2"/>
+        </linearGradient>
+        <!-- Sky gradient -->
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#e3f2fd"/>
+          <stop offset="100%" stop-color="#bbdefb"/>
+        </linearGradient>
+        <!-- Clip paths: confined to each tank interior -->
+        <clipPath id="cp0"><rect x="92"  y="258" width="96"  height="157"/></clipPath>
+        <clipPath id="cp1"><rect x="297" y="218" width="136" height="197"/></clipPath>
+        <clipPath id="cp2"><rect x="542" y="178" width="176" height="237"/></clipPath>
+      </defs>
+
+      <!-- ── Sky background ── -->
+      <rect width="820" height="530" fill="url(#sky)" rx="16"/>
+
+      <!-- ── Ground ── -->
+      <rect x="0" y="428" width="820" height="102" fill="#8d6e63" rx="0"/>
+      <rect x="0" y="420" width="820" height="12" fill="#a1887f"/>
+
+      <!-- ════════════════════════════════════════════
+           OVERFLOW PIPES (connect T1→T2 and T2→T3)
+      ════════════════════════════════════════════ -->
+
+      <!-- Pipe housing T1 → T2 (at height of T1 rim, y=255) -->
+      <rect x="188" y="252" width="109" height="10" fill="#607d8b" rx="4"/>
+      <!-- Animated water flow when T1 overflowing -->
+      @if (isOverflowing(0)) {
+        <rect x="188" y="253" width="109" height="8" fill="url(#fg)" class="flow-h" rx="3"/>
+      }
+
+      <!-- Pipe housing T2 → T3 (at height of T2 rim, y=215) -->
+      <rect x="433" y="212" width="109" height="10" fill="#607d8b" rx="4"/>
+      <!-- Animated water flow when T2 overflowing -->
+      @if (isOverflowing(1)) {
+        <rect x="433" y="213" width="109" height="8" fill="url(#fg)" class="flow-h" rx="3"/>
+      }
+
+      <!-- ════════════════════════════════════════════
+           INLET PIPE (enters Tank 1 from top)
+      ════════════════════════════════════════════ -->
+      <!-- Vertical inlet pipe -->
+      <rect x="136" y="175" width="10" height="80" fill="#607d8b" rx="3"/>
+      <!-- Funnel / header -->
+      <rect x="117" y="162" width="48" height="15" fill="#607d8b" rx="4"/>
+      <!-- Arrow pointing down (animated when adding water) -->
+      @if (isFlowingIn(0)) {
+        <polygon points="141,254 131,234 151,234" fill="#42a5f5" class="inlet-arrow"/>
+      }
+      <text x="141" y="155" text-anchor="middle" font-size="12" fill="#37474f" font-weight="600">Entrada</text>
+
+      <!-- ════════════════════════════════════════════
+           TANK 1  –  200 L
+      ════════════════════════════════════════════ -->
+      <!-- Water fill (clipped to tank inner area) -->
+      <rect x="90"
+            [attr.y]="getWaterY(0)"
+            width="100"
+            [attr.height]="getWaterHeight(0)"
+            fill="url(#wg)"
+            clip-path="url(#cp0)"/>
+      <!-- Tank walls (open-top U-shape) -->
+      <polyline points="90,255 90,415 190,415 190,255"
+                fill="none" stroke="#546e7a" stroke-width="3.5"
+                stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- Level label inside water -->
+      @if (reservoirs[0].level > 4) {
+        <text x="140"
+              [attr.y]="getLevelTextY(0)"
+              text-anchor="middle" font-size="11"
+              fill="white" font-weight="700">
+          {{ reservoirs[0].level | number:'1.0-0' }} L
+        </text>
+      }
+      <!-- Header labels above tank -->
+      <text x="140" y="247" text-anchor="middle" font-size="12" fill="#37474f" font-weight="700">T1 · 200 L</text>
+      <text x="140" y="235" text-anchor="middle" font-size="10" fill="#546e7a">
+        {{ getFillPercent(0) | number:'1.0-0' }}%
+      </text>
+
+      <!-- ════════════════════════════════════════════
+           TANK 2  –  500 L
+      ════════════════════════════════════════════ -->
+      <rect x="295"
+            [attr.y]="getWaterY(1)"
+            width="140"
+            [attr.height]="getWaterHeight(1)"
+            fill="url(#wg)"
+            clip-path="url(#cp1)"/>
+      <polyline points="295,215 295,415 435,415 435,215"
+                fill="none" stroke="#546e7a" stroke-width="3.5"
+                stroke-linejoin="round" stroke-linecap="round"/>
+      @if (reservoirs[1].level > 5) {
+        <text x="365"
+              [attr.y]="getLevelTextY(1)"
+              text-anchor="middle" font-size="11"
+              fill="white" font-weight="700">
+          {{ reservoirs[1].level | number:'1.0-0' }} L
+        </text>
+      }
+      <text x="365" y="207" text-anchor="middle" font-size="12" fill="#37474f" font-weight="700">T2 · 500 L</text>
+      <text x="365" y="195" text-anchor="middle" font-size="10" fill="#546e7a">
+        {{ getFillPercent(1) | number:'1.0-0' }}%
+      </text>
+
+      <!-- ════════════════════════════════════════════
+           TANK 3  –  1000 L
+      ════════════════════════════════════════════ -->
+      <rect x="540"
+            [attr.y]="getWaterY(2)"
+            width="180"
+            [attr.height]="getWaterHeight(2)"
+            fill="url(#wg)"
+            clip-path="url(#cp2)"/>
+      <polyline points="540,175 540,415 720,415 720,175"
+                fill="none" stroke="#546e7a" stroke-width="3.5"
+                stroke-linejoin="round" stroke-linecap="round"/>
+      @if (reservoirs[2].level > 8) {
+        <text x="630"
+              [attr.y]="getLevelTextY(2)"
+              text-anchor="middle" font-size="11"
+              fill="white" font-weight="700">
+          {{ reservoirs[2].level | number:'1.0-0' }} L
+        </text>
+      }
+      <text x="630" y="167" text-anchor="middle" font-size="12" fill="#37474f" font-weight="700">T3 · 1000 L</text>
+      <text x="630" y="155" text-anchor="middle" font-size="10" fill="#546e7a">
+        {{ getFillPercent(2) | number:'1.0-0' }}%
+      </text>
+
+      <!-- ════════════════════════════════════════════
+           DRAIN TAPS (bottom of each tank)
+      ════════════════════════════════════════════ -->
+
+      <!-- TAP 1 ─ center x=140 -->
+      <rect x="136" y="415" width="10" height="24" fill="#607d8b"/>
+      <circle cx="141" cy="451" r="12" class="tap-circle" [class.tap-open]="reservoirs[0].tapOpen"/>
+      <!-- X icon on tap -->
+      <line x1="135" y1="445" x2="147" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="147" y1="445" x2="135" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      @if (reservoirs[0].tapOpen && reservoirs[0].level > 0.05) {
+        <rect x="138" y="463" width="6" height="22" fill="#42a5f5" class="drain-flow" rx="2"/>
+      }
+      <text x="141" y="494" text-anchor="middle" font-size="11" fill="#d7ccc8">Torneira 1</text>
+
+      <!-- TAP 2 ─ center x=365 -->
+      <rect x="361" y="415" width="10" height="24" fill="#607d8b"/>
+      <circle cx="366" cy="451" r="12" class="tap-circle" [class.tap-open]="reservoirs[1].tapOpen"/>
+      <line x1="360" y1="445" x2="372" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="372" y1="445" x2="360" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      @if (reservoirs[1].tapOpen && reservoirs[1].level > 0.05) {
+        <rect x="363" y="463" width="6" height="22" fill="#42a5f5" class="drain-flow" rx="2"/>
+      }
+      <text x="366" y="494" text-anchor="middle" font-size="11" fill="#d7ccc8">Torneira 2</text>
+
+      <!-- TAP 3 ─ center x=630 -->
+      <rect x="626" y="415" width="10" height="24" fill="#607d8b"/>
+      <circle cx="631" cy="451" r="12" class="tap-circle" [class.tap-open]="reservoirs[2].tapOpen"/>
+      <line x1="625" y1="445" x2="637" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="637" y1="445" x2="625" y2="457" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      @if (reservoirs[2].tapOpen && reservoirs[2].level > 0.05) {
+        <rect x="628" y="463" width="6" height="22" fill="#42a5f5" class="drain-flow" rx="2"/>
+      }
+      <text x="631" y="494" text-anchor="middle" font-size="11" fill="#d7ccc8">Torneira 3</text>
+
+    </svg>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       CONTROL PANEL
+  ══════════════════════════════════════════════════ -->
+  <div class="controls-panel">
+
+    <!-- Water input section -->
+    <section class="ctrl-card inlet-card">
+      <h2>💧 Entrada de Água</h2>
+      <div class="ctrl-row">
+        <label for="waterVol">Volume:</label>
+        <input id="waterVol"
+               type="number"
+               [(ngModel)]="waterInputAmount"
+               min="1" max="99999"
+               class="num-input"
+               placeholder="Litros"/>
+        <span class="unit">L</span>
+        <button class="btn btn-primary" (click)="addWater()">Adicionar</button>
+      </div>
+      @if (pendingWater > 0.1) {
+        <p class="pending-msg">⏳ Enchendo… {{ pendingWater | number:'1.0-0' }} L restantes</p>
+      }
+    </section>
+
+    <!-- Tap controls (one per reservoir) -->
+    <div class="taps-grid">
+      @for (r of reservoirs; track r.capacity; let i = $index) {
+        <section class="ctrl-card tap-card" [class.is-open]="r.tapOpen">
+          <h2>🚰 Torneira {{ i + 1 }}</h2>
+
+          <!-- Level progress bar -->
+          <div class="level-bar-track" [title]="r.level + ' / ' + r.capacity + ' L'">
+            <div class="level-bar-fill"
+                 [style.width.%]="getFillPercent(i)"
+                 [class.warn]="getFillPercent(i) > 75"
+                 [class.full]="getFillPercent(i) >= 99.5">
+            </div>
+          </div>
+          <span class="level-label">
+            {{ r.level | number:'1.0-1' }} / {{ r.capacity }} L
+            &nbsp;({{ getFillPercent(i) | number:'1.0-0' }}%)
+          </span>
+
+          <!-- Flow rate input -->
+          <div class="ctrl-row">
+            <label [for]="'tap' + i">Vazão:</label>
+            <input [id]="'tap' + i"
+                   type="number"
+                   [(ngModel)]="tapFlowInputs[i]"
+                   (ngModelChange)="applyTapFlow(i)"
+                   min="0.1" max="9999"
+                   class="num-input"
+                   placeholder="L/s"/>
+            <span class="unit">L/s</span>
+          </div>
+
+          <!-- Toggle tap button -->
+          <button class="btn btn-tap"
+                  [class.btn-open]="r.tapOpen"
+                  (click)="toggleTap(i)">
+            {{ r.tapOpen ? '🔴 Fechar Torneira' : '🟢 Abrir Torneira' }}
+          </button>
+        </section>
+      }
+    </div>
+
+  </div>
+</div>

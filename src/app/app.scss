@@ -1,0 +1,269 @@
+// ═══════════════════════════════════════════════════════════════════════
+//  Water Reservoirs – Component Styles
+// ═══════════════════════════════════════════════════════════════════════
+
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: linear-gradient(160deg, #e8f5e9 0%, #e3f2fd 60%, #fce4ec 100%);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ── Layout wrapper ──────────────────────────────────────────────────────
+
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────
+
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: #0d47a1;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #546e7a;
+    margin: 0;
+  }
+}
+
+// ── SVG card ───────────────────────────────────────────────────────────
+
+.svg-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  margin-bottom: 24px;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+// ── SVG animations ─────────────────────────────────────────────────────
+
+// Water flowing through horizontal overflow pipe
+.flow-h {
+  animation: flowRight 0.6s linear infinite;
+}
+
+@keyframes flowRight {
+  0%   { transform: translateX(-30px); opacity: 0.3; }
+  40%  { opacity: 0.9; }
+  100% { transform: translateX(30px);  opacity: 0.3; }
+}
+
+// Water draining downward from tap
+.drain-flow {
+  animation: drainDown 0.5s ease-in infinite;
+}
+
+@keyframes drainDown {
+  0%   { transform: translateY(-4px); opacity: 0.8; }
+  100% { transform: translateY(12px); opacity: 0.1; }
+}
+
+// Arrow pulsing when inlet is active
+.inlet-arrow {
+  animation: pulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.5; transform: translateY(-3px); }
+  to   { opacity: 1;   transform: translateY(2px);  }
+}
+
+// ── Tap circles (SVG elements styled from CSS) ──────────────────────────
+
+.tap-circle {
+  fill: #ef5350; // closed = red
+  cursor: default;
+  transition: fill 0.25s ease;
+
+  &.tap-open {
+    fill: #43a047; // open = green
+  }
+}
+
+// ── Controls panel ─────────────────────────────────────────────────────
+
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ── Shared card ────────────────────────────────────────────────────────
+
+.ctrl-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+    color: #37474f;
+  }
+}
+
+// ── Inlet card ─────────────────────────────────────────────────────────
+
+.inlet-card {
+  border-left: 5px solid #1976d2;
+}
+
+.pending-msg {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: #1976d2;
+}
+
+// ── Tap cards grid ─────────────────────────────────────────────────────
+
+.taps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.tap-card {
+  border-left: 5px solid #ef5350;
+  transition: border-left-color 0.25s;
+
+  &.is-open {
+    border-left-color: #43a047;
+  }
+}
+
+// ── Control row ────────────────────────────────────────────────────────
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+
+  label {
+    font-size: 0.82rem;
+    color: #546e7a;
+    white-space: nowrap;
+    min-width: 44px;
+  }
+}
+
+.num-input {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1.5px solid #cfd8dc;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #1976d2;
+  }
+}
+
+.unit {
+  font-size: 0.75rem;
+  color: #90a4ae;
+  margin-left: -4px;
+}
+
+// ── Level bar ──────────────────────────────────────────────────────────
+
+.level-bar-track {
+  background: #eceff1;
+  border-radius: 6px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.level-bar-fill {
+  height: 100%;
+  background: #1976d2;
+  border-radius: 6px;
+  transition: width 0.1s linear, background-color 0.3s;
+
+  &.warn { background: #f57c00; }
+  &.full { background: #c62828; }
+}
+
+.level-label {
+  display: block;
+  font-size: 0.78rem;
+  color: #546e7a;
+  margin-bottom: 10px;
+}
+
+// ── Buttons ────────────────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+
+  &:hover  { filter: brightness(1.1); transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
+}
+
+.btn-primary {
+  background: #1976d2;
+  color: white;
+  margin-left: auto;
+}
+
+.btn-tap {
+  width: 100%;
+  background: #ef5350;
+  color: white;
+  margin-top: 4px;
+
+  &.btn-open {
+    background: #43a047;
+  }
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+  .taps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctrl-row {
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    margin-left: 0;
+    width: 100%;
+  }
+}
