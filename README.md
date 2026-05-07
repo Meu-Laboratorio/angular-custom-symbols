@@ -60,3 +60,6 @@ For more information on using the Angular CLI, including detailed command refere
 
 ## Publication URL
 [Github Pages](https://meu-laboratorio.github.io/angular-custom-symbols/)
+
+## Comando para rodar local:
+```ng serve --serve-path angular-custom-symbols```
